@@ -1,10 +1,15 @@
 package com.kurupuxx.notesapi.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kurupuxx.notesapi.entities.User;
@@ -17,7 +22,27 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping
-    public List<User> getAllUser() {
-        return (List<User>) userRepository.findAll();
+    public Iterable<User> getAllUser() {
+        return userRepository.findAll();
+    }
+
+    @PostMapping
+    public @ResponseBody String addNewUser(@RequestBody User newUser) {
+        userRepository.save(newUser);
+        return "Saved";
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable int id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user != null) {
+            userRepository.deleteById(id);
+            return ResponseEntity.ok("User with ID " + id + " has been deleted.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + id + " not found.");
+
+        }
+
     }
 }
