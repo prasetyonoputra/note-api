@@ -3,7 +3,6 @@ package com.kurupuxx.notesapi.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,19 +34,19 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable int id, @RequestBody User updatedUser) {
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody User updatedUser) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             user.setEmail(updatedUser.getEmail());
             user.setName(updatedUser.getName());
-            user.setPassword;(updatedUser.getPassword());
+            user.setPassword(updatedUser.getPassword());
             return ResponseEntity.ok("User with ID " + id + " has been updated.");
         }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + id + " not found.");
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable int id) {
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
@@ -55,8 +54,6 @@ public class UserController {
             return ResponseEntity.ok("User with ID " + id + " has been deleted.");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + id + " not found.");
-
         }
-
     }
 }
